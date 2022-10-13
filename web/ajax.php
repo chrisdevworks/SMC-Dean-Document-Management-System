@@ -3,6 +3,9 @@ ob_start();
 $action = $_GET['action'];
 include 'admin_class.php';
 $crud = new Action();
+
+// =========================================================
+
 if($action == 'login'){
 	$login = $crud->login();
 	if($login)
@@ -13,6 +16,9 @@ if($action == 'logout'){
 	if($logout)
 		echo $logout;
 }
+
+// =========================================================
+
 if($action == 'save_user'){
 	$save = $crud->save_user();
 	if($save)
@@ -28,6 +34,10 @@ if($action == 'delete_user'){
 	if($save)
 		echo $save;
 }
+
+// =========================================================
+
+
 if($action == "save_survey"){
 	$save = $crud->save_survey();
 	if($save)
@@ -82,7 +92,6 @@ if($action == "save_news"){
 		echo $save;
 }
 
-
 if($action == "save_appointment"){
 	$save = $crud->save_appointment();
 	if($save)
@@ -101,6 +110,9 @@ if($action == "noti_appnt"){
 		echo $delsete;
 }
 
+// =========================================================
+
+
 if($action == "save_personal"){
 	$save = $crud->save_personal();
 	if($save)
@@ -113,5 +125,68 @@ if($action == "save_student"){
 		echo $save;
 }
 
+if($action == "delete_student"){
+	$save = $crud->delete_student();
+	if($save)
+		echo $save;
+}
+
+
+// =========================================================
+
+if($action == "save_faculty"){
+	$save = $crud->save_faculty();
+	if($save)
+		echo $save;
+}
+
+if($action == "delete_faculty"){
+	$save = $crud->delete_faculty();
+	if($save)
+		echo $save;
+}
+
+
+
+
+// =========================================================
+
+if($action == "save_subject"){
+	$save = $crud->save_subject();
+	if($save)
+		echo $save;
+}
+
+if($action == "delete_subject"){
+	$delsete = $crud->delete_subject();
+	if($delsete)
+		echo $delsete;
+}
+
+if($action == "update_subject"){
+	$save = $crud->update_user();
+	if($save)
+		echo $save;
+}
+
+
+
+// =========================================================
+
+
+
+if($action == "save_documents"){
+	$save = $crud->save_documents();
+	if($save)
+		echo $save;
+}
+
+if($action == "delete_documents"){
+	$delsete = $crud->delete_documents();
+	if($delsete)
+		echo $delsete;
+}
+
+
+
 ob_end_flush();
-?>

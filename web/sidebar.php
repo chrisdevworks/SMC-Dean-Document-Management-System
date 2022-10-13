@@ -1,11 +1,28 @@
   <aside class="main-sidebar sidebar-light-primary elevation-1">
     <div class="dropdown">
       <a href="javascript:void(0)" class="brand-link bg-light " data-toggle="dropdown" aria-expanded="true" style="font-size: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-        <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center bg-primary text-white font-weight-500" src="assets/dist/img/smc/logo.jpg" alt="">
-        <span class="brand-text h6 text-uppercase d-flex justify-content-between m-0 py-1 mr-2"> 
-          <?php echo ucwords($_SESSION['login_type'])?>
+        <?php if ($_SESSION['login_department'] == 'CECS') : ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CECS.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'CAS') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CAS.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'CON') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CCON.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'CED') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CED.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'CBA') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CBA.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'COC') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/COC.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'CHM') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/CHRM.png" alt="">
+        <?php elseif ($_SESSION['login_department'] == 'GS') :  ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/GSCH..png" alt="">
+        <?php else : ?>
+          <img class="brand-image img-circle elevation-3 d-flex justify-content-center align-items-center text-white font-weight-500" src="assets/dist/img/smc/logo.jpg" alt="">
+        <?php endif; ?>
+        <span class="brand-text h6 text-uppercase d-flex justify-content-between m-0 py-1 mr-2">
+          <?php echo ucwords($_SESSION['login_type']) ?>
           <i class="fa-solid fa-circle-chevron-down text-primary mr-2"></i>
-          <!-- <i class="fa-solid fa-angles-down text-primary"></i> -->
         </span>
       </a>
       <div class="dropdown-menu w-100">
@@ -27,8 +44,32 @@
           </li>
           <?php if ($_SESSION['login_type'] == 'Dean') : ?>
             <li class="nav-item">
-              <a href="#" class="nav-link nav-edit_news">
-                <i class="fa-solid fa-building-user nav-icon"></i>
+              <a href="#" class="nav-link nav-edit_user">
+                <i class="nav-icon fas fa-users"></i>
+                <p>
+                  Account
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="./index.php?page=new_user" class="nav-link tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>Create Account</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="./index.php?page=user_list" class="nav-link tree-item">
+                    <i class="fas fa-angle-right nav-icon"></i>
+                    <p>List</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <!-- <i class="fa-solid fa-building-user nav-icon"></i> -->
+                <i class="fa-solid fa-school nav-icon"></i>
                 <p>
                   Master List
                   <i class="right fas fa-angle-left"></i>
@@ -36,44 +77,21 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="./index.php?page=new_student" class="nav-link nav-new_news tree-item">
+                  <a href="./index.php?page=new_student" class="nav-link tree-item">
                     <i class="fas fa-angle-right nav-icon"></i>
                     <p>Add Student</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="./index.php?page=student_list" class="nav-link nav-user_list tree-item">
+                  <a href="./index.php?page=student_list" class="nav-link tree-item">
                     <i class="fas fa-angle-right nav-icon"></i>
                     <p>List</p>
                   </a>
                 </li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link nav-edit_user">
-                <i class="nav-icon fas fa-users"></i>
-                <p>
-                  Users
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="./index.php?page=new_user" class="nav-link nav-new_user tree-item">
-                    <i class="fas fa-angle-right nav-icon"></i>
-                    <p>Add New</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="./index.php?page=user_list" class="nav-link nav-user_list tree-item">
-                    <i class="fas fa-angle-right nav-icon"></i>
-                    <p>List</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link nav-is-tree nav-edit_survey nav-view_survey">
+            <!-- <li class="nav-item">
+              <a href="#" class="nav-link nav-is-tree">
                 <i class="nav-icon fa fa-book-open"></i>
                 <p>
                   Subjects
@@ -82,61 +100,37 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="./index.php?page=new_test" class="nav-link nav-new_survey tree-item">
+                  <a href="./index.php?page=new_subject" class="nav-link tree-item">
                     <i class="fas fa-angle-right nav-icon"></i>
                     <p>Add New</p>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="./index.php?page=test_list" class="nav-link nav-survey_list tree-item">
+                  <a href="./index.php?page=subject_list" class="nav-link">
                     <i class="fas fa-angle-right nav-icon"></i>
                     <p>List</p>
                   </a>
                 </li>
               </ul>
-            </li>
-            <li class="nav-item">
-              <a href="./index.php?page=appointment_list" class="nav-link nav-survey_widget nav-answer_survey">
+            </li> -->
+            <!-- <li class="nav-item">
+              <a href="./index.php?page=Prospectus" class="nav-link">
                 <i class="fal-light fa-regular fa-newspaper nav-icon "></i>
                 <p>
                   Prospectus
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="./index.php?page=documents" class="nav-link">
+                <i class="fal-light fa-regular fa-newspaper nav-icon "></i>
+                <p>
+                  Documents
+                </p>
+              </a>
+            </li> -->
           <?php else : ?>
-            <li class="nav-item">
-              <a href="./index.php?page=test_widget" class="nav-link nav-survey_widget nav-answer_survey">
-                <i class="nav-icon fas fa-poll-h"></i>
-                <p>
-                  Test List
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="" class="nav-link nav-survey_widget nav-answer_survey">
-                <i class="nav-icon fa fa-calendar-check"></i>
-                <p>
-                  Appointment
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="./index.php?page=appointment" class="nav-link nav-new_survey tree-item">
-                    <i class="fas fa-angle-right nav-icon"></i>
-                    <p>Schedule</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="./index.php?page=appointment_list" class="nav-link nav-survey_list tree-item">
-                    <i class="fas fa-angle-right nav-icon"></i>
-                    <p>History</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            </li>
-            </li>
+            
           <?php endif; ?>
         </ul>
       </nav>

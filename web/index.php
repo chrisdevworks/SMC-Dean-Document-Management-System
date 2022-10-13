@@ -112,7 +112,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-inline-block">
-        <b><p class="m-0 text-center text-white">Copyright &copy; <a href="mainpage.php" target="_blank">St. Michael's College BED Guidance Center</a></p></b>
+        <b><p class="m-0 text-center text-black">Copyright &copy; <a href="mainpage.php" target="_blank">St. Michael's College</a></p></b>
     </div>
   </footer>
 

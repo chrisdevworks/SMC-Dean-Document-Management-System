@@ -7,11 +7,11 @@
 				<input type="hidden" name="id" value="<?php echo isset($id) ? $id : '' ?>">
 				<div class="row">
 					<div class="col-md-12">
-						<b class="text-muted">System Credentials</b>
+						<b class="text-muted">User Info</b>
 						<?php if ($_SESSION['login_type'] == 'Dean') : ?>
 							<div class="form-group">
 								<label for="" class="control-label">User Role</label>
-								<select name="type" id="type" class="custom-select custom-select-sm">
+								<select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Role" name="type" required>
 									<option value="Dean" <?php echo isset($type) && $type == 'Dean' ? 'selected' : '' ?>>Dean</option>
 									<option value="Faculty" <?php echo isset($type) && $type == 'Faculty' ? 'selected' : '' ?>>Faculty</option>
 								</select>
@@ -21,30 +21,30 @@
 						<?php endif; ?>
 						<div class="form-group">
 							<label for="department" class="control-label">Department</label>
-							<select class="form-control form-control-primary form-control-sm" data-toggle="tooltip" data-placement="top" data-original-title="Department" name="department" required>
-								<option value="CED">College of Education</option>
-								<option value="COC">College of Criminology</option>
-								<option value="CECS">College of Engineering and Computer Studies</option>
-								<option value="CAS"></option>
-								<option value="CHM"></option>
-								<option value=""></option>
-								<option value=""></option>
-								<option value=""></option>
-							</select>
+							<select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Department" name="department" required>
+                                <option value="CAS">College of Arts and Sciences</option>
+                                <option value="CED">College of Education</option>
+                                <option value="CECS">College of Engineering & Computer Studies</option>
+                                <option value="CBAA">College of Business Administration and Accountancy</option>
+                                <option value="CHM">College of Hospitality Management</option>
+                                <option value="CON">College of Nursing</option>
+                                <option value="COC">College of Criminology</option>
+                                <option value="GS">Graduate School</option>
+                            </select>
 						</div>
 						<div class="form-group">
 							<label class="control-label">Email</label>
-							<input type="email" class="form-control form-control-sm" name="email" required value="<?php echo isset($email) ? $email : '' ?>">
+							<input type="email" class="form-control form-control-primary" name="email" required value="<?php echo isset($email) ? $email : '' ?>">
 							<small id="#msg"></small>
 						</div>
 						<div class="form-group">
 							<label class="control-label">Password</label>
-							<input type="text" class="form-control form-control-sm" name="password" <?php echo isset($id) ? "" : 'required' ?>>
+							<input type="text" class="form-control form-control-primary" name="password" <?php echo isset($id) ? "" : 'required' ?>>
 							<small><i><?php echo isset($id) ? "Leave this blank if you dont want to change you password" : '' ?></i></small>
 						</div>
 						<div class="form-group">
 							<label class="label control-label">Confirm Password</label>
-							<input type="text" class="form-control form-control-sm" name="cpass" <?php echo isset($id) ? 'required' : '' ?>>
+							<input type="text" class="form-control form-control-primary" name="cpass" <?php echo isset($id) ? 'required' : '' ?>>
 							<small id="pass_match" data-status=''></small>
 						</div>
 

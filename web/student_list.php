@@ -26,7 +26,7 @@
 						<?php
 						$i = 1;
 						$type = array('', "Admin", "Staff", "Student");
-						$qry = $conn->query("SELECT * FROM student order by id asc");
+						$qry = $conn->query("SELECT * FROM student where department = '" . $_SESSION['login_department'] . "' order by id asc");
 						while ($row = $qry->fetch_assoc()) :
 						?>
 							<tr>
@@ -63,14 +63,14 @@
 	$(document).ready(function() {
 		$('#list').dataTable()
 	})
-	$('.delete_user').click(function() {
-		_conf("Are you sure to delete this user?", "delete_user", [$(this).attr('data-id')])
+	$('.delete_student').click(function() {
+		_conf("Are you sure to delete this student?", "delete_student", [$(this).attr('data-id')])
 	})
 
-	function delete_user($id) {
+	function delete_student($id) {
 		start_load()
 		$.ajax({
-			url: 'ajax.php?action=delete_user',
+			url: 'ajax.php?action=delete_student',
 			method: 'POST',
 			data: {
 				id: $id

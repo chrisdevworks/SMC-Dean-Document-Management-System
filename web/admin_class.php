@@ -20,6 +20,10 @@ class Action
 		ob_end_flush();
 	}
 
+
+	// ====================================================================================================================
+
+
 	function login()
 	{
 		extract($_POST);
@@ -42,6 +46,10 @@ class Action
 		}
 		header("location:login.php");
 	}
+
+
+	// ====================================================================================================================
+
 
 	function save_user()
 	{
@@ -131,6 +139,11 @@ class Action
 			}
 		}
 	}
+
+
+
+	// ====================================================================================================================
+
 
 	function save_survey()
 	{
@@ -367,71 +380,9 @@ class Action
 			return 1;
 	}
 
-	function save_personal()
-	{
-		extract($_POST);
-
-		$loginid = $_SESSION["login_id"];
-		// $studentid = $_POST['studentid'];
-		// $id = 1;
-		$img = $_FILES["nupload"]["name"]; //stores the original filename from the client
-		$tmp = $_FILES["nupload"]["tmp_name"]; //stores the name of the designated temporary file
-		$errorimg = $_FILES["nupload"]["error"]; //stores any error code resulting from the transfer
-
-		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'pdf', 'doc', 'ppt', 'pdf'); // valid extensions
-		$path = 'assets/dist/uploads/'; // upload directory
 
 
-		$fname = $_POST['fname'];
-		$gender = $_POST['gender'];
-		$smcid = $_POST['smcid'];
-		$paddress = $_POST['paddress'];
-		// $Gradelevel = $_POST['Gradelevel'];
-		$mother = $_POST['mother'];
-		$father = $_POST['father'];
-
-		$bday = $_POST['bday'];
-		$civilstat = $_POST['civilstat'];
-		$religion = $_POST['religion'];
-		$cphone = $_POST['cphone'];
-		// $strand = $_POST['strand'];
-		$pa_addr = $_POST['pa_addr'];
-		$pa_cont = $_POST['pa_cont'];
-
-		// if(!empty($_POST['ntitle']) AND !empty($_POST['ncontent']) AND !empty($_POST['nauthor']) AND $_FILES['nupload']){
-		$img = $_FILES['nupload']['name'];
-		$tmp = $_FILES['nupload']['tmp_name'];
-		$size = $_FILES['nupload']['size'];
-
-		// get uploaded file's extension
-		$ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
-		// can upload same image using rand function
-		$final_image = rand(1000, 1000000) . $img;
-		// check's valid format
-		if (in_array($ext, $valid_extensions)) {
-			$path = $path . strtolower($final_image);
-			// $data = $data.$_FILES["nupload"]["name"];
-			// echo $data;
-			if ($size > 2097152) {
-				echo 'File size must be less than 15 MB';
-			} else {
-				if (move_uploaded_file($tmp, $path)) {
-
-					$check = $this->db->query("SELECT id FROM student WHERE id = '" . $loginid . "'");
-					if (mysqli_num_rows($check) > 0) {
-						$save = $this->db->query("UPDATE student set studentname='" . $fname . "',gender='" . $gender . "',school_id='" . $smcid . "',paddress='" . $paddress . "',birthdate='" . $bday . "',civilstatus='" . $civilstat . "',religion='" . $religion . "',contact='" . $cphone . "',mothersname='" . $mother . "',fathersname='" . $father . "',parents_address='" . $pa_addr . "',parents_contact='" . $pa_cont . "',nupload='" . $path . "' WHERE id = $loginid");
-					} else {
-						$save = $this->db->query("INSERT INTO student (id,userid,studentname,gender,school_id,paddress,birthdate,civilstatus,religion,contact,mothersname,fathersname,parents_address,parents_contact,nupload) VALUES ((SELECT id FROM users where id='" . $loginid . "'),(SELECT id FROM users where id='" . $loginid . "'),'" . $fname . "','" . $gender . "','" . $smcid . "','" . $paddress . "','" . $bday . "','" . $civilstat . "','" . $religion . "','" . $cphone . "','" . $mother . "','" . $father . "','" . $pa_addr . "','" . $pa_cont . "','" . $path . "') ");
-					}
-					if ($save)
-						return 1;
-				}
-			}
-		} else {
-			echo 'invalid';
-		}
-	}
-
+	// ====================================================================================================================
 
 	function save_student()
 	{
@@ -439,6 +390,8 @@ class Action
 
 		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp'); // valid extensions
 		$path = 'assets/dist/uploads/'; // upload directory
+
+		$sid = $_POST['sid'];
 
 		$fname = $_POST['firstname'];
 		$mname = $_POST['middlename'];
@@ -471,17 +424,45 @@ class Action
 		// can upload same image using rand function
 		$final_image = rand(1000, 1000000) . $img;
 		// check's valid format
+
+
 		if (in_array($ext, $valid_extensions)) {
 			$path = $path . strtolower($final_image);
-			// $data = $data.$_FILES["nupload"]["name"];
-			// echo $data;
 			if ($size > 2097152) {
 				echo 'File size must be less than 15 MB';
 			} else {
 				if (move_uploaded_file($tmp, $path)) {
-					$save = $this->db->query("INSERT INTO student (firstname,middlename,lastname,gender,smc_id,year_level,paddress,email,birthdate,civilstatus,department,course,religion,contact,mothersname,fathersname,parents_address,parents_contact,profile_pic) 
+
+					$check = $this->db->query("SELECT id FROM student WHERE id = '" . $sid . "'");
+
+					if (mysqli_num_rows($check) > 0) {
+
+						$save = $this->db->query("UPDATE `student`
+						set firstname='" . $fname . "',
+						   middlename='" . $mname . "',
+						   lastname='" . $lname . "',
+						   gender='" . $gender . "',
+						   smc_id='" . $smcid . "',
+						   year_level='" . $yrlvl . "',
+						   paddress='" . $paddress . "',
+						   email='" . $email . "',
+						   birthdate='" . $bday . "',
+						   civilstatus='" . $civil . "',
+						   department='" . $dept . "',
+						   course='" . $course . "',
+						   religion='" . $religion . "',
+						   contact='" . $contact . "',
+						   mothersname='" . $mother . "',
+						   fathersname='" . $father . "',
+						   parents_address='" . $pa_addr . "',
+						   parents_contact='" . $pa_cont . "',
+						   profile_pic='" . $path . "' WHERE id ='" . $sid . "' ");
+					} else {
+						$save = $this->db->query("INSERT INTO student (firstname,middlename,lastname,gender,smc_id,year_level,paddress,email,birthdate,civilstatus,department,course,religion,contact,mothersname,fathersname,parents_address,parents_contact,profile_pic) 
 					VALUES 
-					('" . $fname . "','" . $mname . "','" . $lname . "','" . $gender . "','" . $smcid . "','" . $yrlvl . "','" . $paddress . "','" . $email . "','" . $bday . "','" . $civil. "','" . $dept . "','" . $course . "','" . $religion . "','" . $contact . "','" . $mother . "','" . $father . "','" . $pa_addr . "','" . $pa_cont . "','" . $path . "') ");
+					('" . $fname . "','" . $mname . "','" . $lname . "','" . $gender . "','" . $smcid . "','" . $yrlvl . "','" . $paddress . "','" . $email . "','" . $bday . "','" . $civil . "','" . $dept . "','" . $course . "','" . $religion . "','" . $contact . "','" . $mother . "','" . $father . "','" . $pa_addr . "','" . $pa_cont . "','" . $path . "') ");
+					}
+
 					if ($save)
 						return 1;
 				}
@@ -489,5 +470,221 @@ class Action
 		} else {
 			echo 'invalid';
 		}
+	}
+
+
+	function delete_student()
+	{
+		extract($_POST);
+		// $id = $_POST['id'];
+		$delete = $this->db->query("DELETE FROM student where id = " . $id);
+		if ($delete)
+			return 1;
+	}
+
+
+	// ====================================================================================================================
+
+	function save_faculty()
+	{
+		extract($_POST);
+
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp'); // valid extensions
+		$path = 'assets/dist/uploads/'; // upload directory
+
+		$sid = $_POST['sid'];
+		$fid = $_POST['fid'];
+
+		$fname = $_POST['firstname'];
+		$mname = $_POST['middlename'];
+		$lname = $_POST['lastname'];
+		$gender = $_POST['gender'];
+		$smcid = $_POST['smc_id'];
+		$paddress = $_POST['paddress'];
+		$email = $_POST['email'];
+		$bday = $_POST['birthdate'];
+		$civil = $_POST['civilstatus'];
+		$dept = $_POST['department'];
+		$course = $_POST['course'];
+		$religion = $_POST['religion'];
+		$contact = $_POST['contact'];
+		$mother = $_POST['mothersname'];
+		$father = $_POST['fathersname'];
+		$pa_addr = $_POST['parents_address'];
+		$pa_cont = $_POST['parents_contact'];
+
+
+		// if(!empty($_POST['ntitle']) AND !empty($_POST['ncontent']) AND !empty($_POST['nauthor']) AND $_FILES['nupload']){
+		$img = $_FILES['profile_pic']['name'];
+		$tmp = $_FILES['profile_pic']['tmp_name'];
+		$size = $_FILES['profile_pic']['size'];
+		$errorimg = $_FILES["profile_pic"]["error"]; //stores any error code resulting from the transfer
+
+		// get uploaded file's extension
+		$ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+		// can upload same image using rand function
+		$final_image = rand(1000, 1000000) . $img;
+		// check's valid format
+
+
+		if (in_array($ext, $valid_extensions)) {
+			$path = $path . strtolower($final_image);
+			if ($size > 12097152) {
+				echo 'File size must be less than 15 MB';
+			} else {
+				if (move_uploaded_file($tmp, $path)) {
+
+					$check = $this->db->query("SELECT id FROM faculty WHERE id = '" . $sid . "'");
+
+					if (mysqli_num_rows($check) > 0) {
+
+						$save = $this->db->query("UPDATE `faculty`
+						set firstname='" . $fname . "',
+						   middlename='" . $mname . "',
+						   lastname='" . $lname . "',
+						   gender='" . $gender . "',
+						   smc_id='" . $smcid . "',
+						   year_level='" . $yrlvl . "',
+						   paddress='" . $paddress . "',
+						   email='" . $email . "',
+						   birthdate='" . $bday . "',
+						   civilstatus='" . $civil . "',
+						   department='" . $dept . "',
+						   course='" . $course . "',
+						   religion='" . $religion . "',
+						   contact='" . $contact . "',
+						   mothersname='" . $mother . "',
+						   fathersname='" . $father . "',
+						   parents_address='" . $pa_addr . "',
+						   parents_contact='" . $pa_cont . "',
+						   profile_pic='" . $path . "' WHERE id ='" . $sid . "' ");
+					} else {
+						$save = $this->db->query("INSERT INTO faculty (userid,firstname,middlename,lastname,gender,smc_id,paddress,email,birthdate,civilstatus,department,course,religion,contact,mothersname,fathersname,parents_address,parents_contact,profile_pic) 
+					VALUES 
+					('" . $fid . "','" . $fname . "','" . $mname . "','" . $lname . "','" . $gender . "','" . $smcid . "','" . $paddress . "','" . $email . "','" . $bday . "','" . $civil . "','" . $dept . "','" . $course . "','" . $religion . "','" . $contact . "','" . $mother . "','" . $father . "','" . $pa_addr . "','" . $pa_cont . "','" . $path . "') ");
+					}
+
+					if ($save)
+						return 1;
+				}
+			}
+		} else {
+			echo 'invalid';
+		}
+	}
+
+
+	function delete_faculty()
+	{
+		extract($_POST);
+		// $id = $_POST['id'];
+		$delete = $this->db->query("DELETE FROM faculty where id = " . $id);
+		if ($delete)
+			return 1;
+	}
+
+
+	// ==========================================================================================
+
+	function save_subject()
+	{
+		extract($_POST);
+		$data = "";
+		foreach ($_POST as $k => $v) {
+			if (!in_array($k, array('id')) && !is_numeric($k)) {
+				if (empty($data)) {
+					$data .= " $k='$v' ";
+				} else {
+					$data .= ", $k='$v' ";
+				}
+			}
+		}
+		if (empty($id)) {
+			$save = $this->db->query("INSERT INTO subject set $data");
+		} else {
+			$save = $this->db->query("UPDATE subject set $data where id = $id");
+		}
+
+		if ($save)
+			return 1;
+	}
+
+
+	function delete_subject()
+	{
+		extract($_POST);
+		$delete = $this->db->query("DELETE FROM subject where id = " . $id);
+		if ($delete)
+			return 1;
+	}
+
+
+	// ==========================================================================================
+
+	function save_documents()
+	{
+		extract($_POST);
+
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'pdf', 'docx', 'doc', 'pptx', 'xlsx', 'txt'); // valid extensions
+		$path = 'assets/dist/uploads/'; // upload directory
+
+		$sid = $_POST['sid'];
+		$fid = $_POST['fid'];
+		$title = $_POST['title'];
+		$docs_status = $_POST['docs_status'];
+
+		// if(!empty($_POST['ntitle']) AND !empty($_POST['ncontent']) AND !empty($_POST['nauthor']) AND $_FILES['nupload']){
+		$img = $_FILES['uploaded_files']['name'];
+		$tmp = $_FILES['uploaded_files']['tmp_name'];
+		$size = $_FILES['uploaded_files']['size'];
+		$errorimg = $_FILES["uploaded_files"]["error"]; //stores any error code resulting from the transfer
+
+		// get uploaded file's extension
+		$ext = strtolower(pathinfo($img, PATHINFO_EXTENSION));
+		// can upload same image using rand function
+		$final_image = rand(1000, 1000000) . $img;
+		// check's valid format
+
+
+		if (in_array($ext, $valid_extensions)) {
+			$path = $path . strtolower($final_image);
+			if ($size > 2222097152) {
+				echo 'File size must be less than 115 MB';
+			} else {
+				if (move_uploaded_file($tmp, $path)) {
+
+					$check = $this->db->query("SELECT id FROM documents WHERE id = '" . $sid . "'");
+
+					if ($sid == 'NULL') {
+						$save = $this->db->query("INSERT INTO documents (student_id,faculty_id,title,docs_status,uploaded_files) 
+						VALUES 
+						(NULL,'" . $fid . "','" . $title . "','" . $docs_status . "','" . $path . "') ");
+
+						if ($save) {
+							return 1;
+						}
+					} else {
+						$save = $this->db->query("INSERT INTO documents (faculty_id,student_id,title,docs_status,uploaded_files) 
+						VALUES 
+						(NULL,'" . $sid . "','" . $title . "','" . $docs_status . "','" . $path . "') ");
+
+						if ($save) {
+							return 1;
+						}
+					}
+				}
+			}
+		} else {
+			echo 'invalid';
+		}
+	}
+
+
+	function delete_documents()
+	{
+		extract($_POST);
+		$delete = $this->db->query("DELETE FROM documents where id = " . $id);
+		if ($delete)
+			return 1;
 	}
 }

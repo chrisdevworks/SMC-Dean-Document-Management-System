@@ -1,6 +1,6 @@
 <?php include('db_connect.php') ?>
 
-<?php if ($_SESSION['login_type'] == 'Admin') : ?>
+<?php if ($_SESSION['login_type'] == 'Dean') : ?>
 
     <style>
         div.slide {
@@ -45,6 +45,10 @@
             font-weight: 300;
         }
 
+        .nav-stud a:hover {
+            background-color: #e9ecef;
+            color: black;
+        }
     </style>
 
 
@@ -55,11 +59,11 @@
                     <div class="page-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="card card-widget widget-user">
+                                <div class="card card-widget widget-user collapsed-card">
                                     <div class="widget-user-header bg-gradient-primary">
                                         <?php
                                         $loginid = $_SESSION["login_id"];
-                                        $appointment = $conn->query("SELECT * FROM student WHERE id = '8'");
+                                        $appointment = $conn->query("SELECT * FROM student WHERE id = " . $_GET['id']);
                                         while ($row = $appointment->fetch_assoc()) :
                                         ?>
                                             <div class="widget-user justify-content-around d-flex">
@@ -72,33 +76,140 @@
                                         <img style="width:150px;height:150px;" class="elevation-3 img-circle text-center card-img-top this-image img-fluid img-thumbnail profile-user-img" src="<?php echo $row['profile_pic'] ?>" alt="..." />
                                         <!-- </div> -->
                                         <!-- <img class="img-circle elevation-2" src="<?php echo $row['nupload'] ?>" alt="User Avatar"> -->
-                                    <?php endwhile; ?>
                                     </div>
-
-                                    <div class="card-footer p-0">
+                                    <div class="card-header">
+                                        <!-- <h3 class="card-title">Documents</h3> -->
+                                        <a class="btn btn-primary btn-sm" href="./index.php?page=documents&id=<?php echo $row['id'] ?>"><i class="fas fa-upload"></i>Upload Document</a>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool btn-secondary btn-sm" data-card-widget="collapse" title="Collapse">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php endwhile; ?>
+                                <div class="card-body p-0" style="display: none;">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped ">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 1%">#</th>
+                                                    <th style="width: 40%">Document</th>
+                                                    <th style="width: 20%">Date Uploaded</th>
+                                                    <th style="width: 8%">Status</th>
+                                                    <th style="width: 20%"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 1;
+                                                $type = array('', "Admin", "Staff", "Student");
+                                                $qry = $conn->query("SELECT * FROM documents where student_id = '" . $_GET['id'] . "' order by id asc");
+                                                while ($row = $qry->fetch_assoc()) :
+                                                ?>
+                                                    <tr>
+                                                        <td><?php echo $i++ ?></td>
+                                                        <td><?php echo $row['title'] ?></td>
+                                                        <td class="document-state"><?php echo $row['date_uploaded'] ?></td>
+                                                        <td class="document-state">
+                                                            <?php if($row['docs_status'] == 'Completed'): ?>
+                                                                <span class="badge badge-success"><?php echo $row['docs_status'] ?></span>
+                                                            <?php else: ?>
+                                                                <span class="badge badge-danger"><?php echo $row['docs_status'] ?></span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td class="document-actions text-right">
+                                                            <a class="btn btn-primary btn-sm" target="_blank" href="<?php echo $row['uploaded_files'] ?>"><i class="fas fa-upload"></i> View</a>
+                                                            <!-- <a class="btn btn-info btn-sm" href="./index.php?page=edit_documents&did=<?php echo $row['id'] ?>"><i class="fas fa-folder"></i> Edit</a> -->
+                                                            <!-- <a class="btn btn-danger btn-sm" href="#"><i class="fas fa-trash"></i> Delete</a> -->
+                                                            <button type="button" class="btn btn-danger btn-sm delete_documents" data-id="<?php echo $row['id'] ?>">
+                                                                <i class="fas fa-trash"></i> Delete
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                <?php endwhile; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- <div class="card-body p-0">
                                         <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">
-                                                    Documents <span class="float-right badge bg-primary"><i class="fa-regular fa-folder-open fa-lg m-1"></i></span>
+                                            <li class="nav-item nav-stud d-flex justify-content-between p-1">
+                                                <a href="#" class="nav-link disabled font-weight-bold ">
+                                                    Assessment
                                                 </a>
+                                                <div class="btn-group ">
+                                                    <a href="./index.php?page=edit_student&id=<?php echo $row['id'] ?>" class="btn btn-primary btn-flat">
+                                                        <i class="fas fa-upload"></i>
+                                                    </a>
+                                                    <a href="./index.php?page=student&id=<?php echo $row['id'] ?>" class="btn btn-info btn-flat">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-flat delete_student" data-id="<?php echo $row['id'] ?>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </li>
-                                            <li class="nav-item">
-                                                <a href="#" class="nav-link">
-                                                    Prospectus <span class="float-right badge bg-info"><i class="fa-solid fa-users-rectangle fa-lg m-1"></i></span>
+                                            <li class="nav-item nav-stud d-flex justify-content-between p-1">
+                                                <a href="#" class="nav-link disabled font-weight-bold">
+                                                    Prospectus
                                                 </a>
+                                                <div class="btn-group">
+                                                    <a href="./index.php?page=edit_student&id=<?php echo $row['id'] ?>" class="btn btn-primary btn-flat ">
+                                                        <i class="fas fa-upload"></i>
+                                                    </a>
+                                                    <a href="./index.php?page=student&id=<?php echo $row['id'] ?>" class="btn btn-info btn-flat">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-flat delete_student" data-id="<?php echo $row['id'] ?>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
                                             </li>
-                                            <li class="nav-item">
+                                            <li class="nav-item nav-stud d-flex justify-content-between p-1">
+                                                <a href="#" class="nav-link disabled font-weight-bold">
+                                                    Withdrawal Form
+                                                </a>
+                                                <div class="btn-group">
+                                                    <a href="./index.php?page=edit_student&id=<?php echo $row['id'] ?>" class="btn btn-primary btn-flat ">
+                                                        <i class="fas fa-upload"></i>
+                                                    </a>
+                                                    <a href="./index.php?page=student&id=<?php echo $row['id'] ?>" class="btn btn-info btn-flat">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-flat delete_student" data-id="<?php echo $row['id'] ?>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li class="nav-item nav-stud d-flex justify-content-between p-1">
+                                                <a href="#" class="nav-link disabled font-weight-bold">
+                                                    Shift Slip
+                                                </a>
+                                                <div class="btn-group">
+                                                    <a href="./index.php?page=edit_student&id=<?php echo $row['id'] ?>" class="btn btn-primary btn-flat ">
+                                                        <i class="fas fa-upload"></i>
+                                                    </a>
+                                                    <a href="./index.php?page=student&id=<?php echo $row['id'] ?>" class="btn btn-info btn-flat">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-danger btn-flat delete_student" data-id="<?php echo $row['id'] ?>">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </li>
+                                            <li class="nav-item nav-stud">
                                                 <a href="#" class="nav-link">
                                                     Class Schedule <span class="float-right badge bg-success"><i class="fa-solid fa-chalkboard-user fa-lg m-1"></i></span>
                                                 </a>
                                             </li>
-                                            <li class="nav-item">
+                                            <li class="nav-item nav-stud">
                                                 <a href="#" class="nav-link">
                                                     Request <span class="float-right badge bg-danger"><i class="fa-solid fa-file-pen fa-lg m-1"></i></span>
                                                 </a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> -->
+
                                 </div>
 
                                 <!-- PERSONAL -->
@@ -118,7 +229,7 @@
                                                             <div class="general-info">
                                                                 <?php
                                                                 $loginid = $_SESSION["login_id"];
-                                                                $appointment = $conn->query("SELECT * FROM student WHERE id = '8'");
+                                                                $appointment = $conn->query("SELECT * FROM student WHERE id = " . $_GET['id']);
                                                                 while ($row = $appointment->fetch_assoc()) :
                                                                 ?>
                                                                     <div class="row">
@@ -213,216 +324,278 @@
                                                     <div class="edit-info" style="display: none;">
                                                         <?php
                                                         $loginid = $_SESSION["login_id"];
-                                                        $appointment = $conn->query("SELECT * FROM student WHERE id = '8'");
+                                                        $appointment = $conn->query("SELECT * FROM student WHERE id = " . $_GET['id']);
                                                         while ($row = $appointment->fetch_assoc()) :
                                                         ?>
+                                                            <input type="hidden" name="sid" value="<?php echo $row['id'] ?>">
                                                             <div class="row">
-                                                                <div class="col-lg-12">
-                                                                    <div class="general-info">
-                                                                        <div class="row">
-                                                                            <div class="col-lg-6">
-                                                                                <table class="table">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="First Name" name="fname" value="<?php echo $row['firstname'] ?>" placeholder="First Name" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Middle Name" name="mname" value="<?php echo $row['middlename'] ?>" placeholder="Middle Name" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Last Name" name="lname" value="<?php echo $row['lastname'] ?>" placeholder="Last Name" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-venus-mars fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Gender" name="gender">
-                                                                                                        <option value="Male" <?php if ($row['gender'] == "Male") echo "selected"; ?>>Male</option>
-                                                                                                        <option value="Female" <?php if ($row['gender'] == "Female") echo "selected"; ?>>Female</option>
-                                                                                                    </select>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-id-card fa-fw"></i></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="SMC ID" name="smcid" value="<?php echo $row['smc_id'] ?>" placeholder="SMC ID">
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-location-dot fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <textarea rows="1" class="form-control form-control-primary" name="paddress" placeholder="Permanent Address" data-toggle="tooltip" data-placement="top" data-original-title="Permanent Address" required=""><?php echo $row['paddress'] ?></textarea>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-person-dress fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Mother's Name" name="mother" value="<?php echo $row['mothersname'] ?>" placeholder="Mother's Name" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-person fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Father's Name" name="father" value="<?php echo $row['fathersname'] ?>" placeholder="Father's Name" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                            <div class="col-lg-6">
-                                                                                <table class="table">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-cake-candles fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="date" class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Birth Date" id="date" name="bday" placeholder="Birthday" value="<?php echo $row['birthdate'] ?>">
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-hand-holding-heart fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Civil Status" name="civilstat">
-                                                                                                        <option value="Single" <?php if ($row['civilstatus'] == "Single") echo "selected"; ?>>Single</option>
-                                                                                                        <option value="Married" <?php if ($row['civilstatus'] == "Married") echo "selected"; ?>>Married</option>
-                                                                                                        <option value="Widow" <?php if ($row['civilstatus'] == "Widow") echo "selected"; ?>>Widow</option>
-                                                                                                    </select>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-place-of-worship fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Religion" name="religion">
-                                                                                                        <option value="Roman Catholic" <?php if ($row['religion'] == "Roman Catholic") echo "selected"; ?>>Roman Catholic</option>
-                                                                                                        <option value="Islam" <?php if ($row['religion'] == "Islam") echo "selected"; ?>>Islam</option>
-                                                                                                        <option value="Seventh Day Adventist" <?php if ($row['civilstatus'] == "Seventh Day Adventist") echo "selected"; ?>>Seventh Day Adventist</option>
-                                                                                                        <option value="Baptist" <?php if ($row['religion'] == "Baptist") echo "selected"; ?>>Baptist</option>
-                                                                                                        <option value="Mormons" <?php if ($row['religion'] == "Mormons") echo "selected"; ?>>Mormons</option>
-                                                                                                        <option value="Iglesia ni Kristo" <?php if ($row['religion'] == "Iglesia ni Kristo") echo "selected"; ?>>Iglesia ni Kristo</option>
-                                                                                                        <option value="Protestant" <?php if ($row['religion'] == "Protestant") echo "selected"; ?>>Protestant</option>
-                                                                                                        <option value="Born Again" <?php if ($row['religion'] == "Born Again") echo "selected"; ?>>Born Again</option>
-                                                                                                        <option value="Jehova`s Witness" <?php if ($row['religion'] == "Jehova`s Witness") echo "selected"; ?>>Jehova`s Witness</option>
-                                                                                                        <option value="IFI" <?php if ($row['religion'] == "IFI") echo "selected"; ?>>IFI</option>
-                                                                                                        <option value="Evangelism" <?php if ($row['religion'] == "Evangelism") echo "selected"; ?>>Evangelism</option>
-                                                                                                        <option value="Christian Alliance" <?php if ($row['religion'] == "Christian Alliance") echo "selected"; ?>>Christian Alliance</option>
-                                                                                                        <option value="Others" <?php if ($row['religion'] == "Others") echo "selected"; ?>>Others</option>
-                                                                                                    </select>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-mobile-screen fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="tel" id="cphone" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Contact" name="cphone" value="<?php echo $row['contact'] ?>" placeholder="09XXXXXYYYY" pattern="[0-9]{11}" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-location-dot fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Parent's Address" name="pa_addr" value="<?php echo $row['parents_address'] ?>" placeholder="Parent's Address" required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-mobile-retro fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Parents's Contact No." name="pa_cont" value="<?php echo $row['parents_contact'] ?>" placeholder="Parents's Contact No." required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-solid fa-cake-candles fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Parents's Contact No." name="pa_cont" value="<?php echo $row['parents_contact'] ?>" placeholder="Parents's Contact No." required>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <td>
-                                                                                                <div class="input-group">
-                                                                                                    <div class="input-group-prepend">
-                                                                                                        <span class="input-group-text bg-primary"><i class="fa-sharp fa-solid fa-file-image fa-fw"></i></span>
-                                                                                                    </div>
-                                                                                                    <div class="custom-file">
-                                                                                                        <input type="file" class="custom-file-input" id="exampleInputFile">
-                                                                                                        <label class="custom-file-label" for="exampleInputFile">Upload Profile Picture</label>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-lg-12 text-right justify-content-center d-flex mb-4">
-                                                                            <button class="btn btn-primary mr-2">Save</button>
-                                                                            <button class="btn btn-secondary" type="button" onclick="location.href = 'index.php?page=home'">Cancel</button>
-                                                                        </div>
-                                                                    </div>
+                                                                <div class="col-lg-6">
+                                                                    <table class="table">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="First Name" name="firstname" value="<?php echo $row['firstname'] ?>" placeholder="First Name" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Middle Name" name="middlename" value="<?php echo $row['middlename'] ?>" placeholder="Middle Name" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-user fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Last Name" name="lastname" value="<?php echo $row['lastname'] ?>" placeholder="Last Name" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-arrow-up-right-dots fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Year Level" name="year_level" value="<?php echo $row['year_level'] ?>" placeholder="Year Level" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-id-card fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="SMC ID" name="smc_id" value="<?php echo $row['smc_id'] ?>" placeholder="SMC ID" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-graduation-cap fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Course" name="course" required>
+                                                                                            <option value="BACHELOR OF ARTS IN ENGLISH LANGUAGE">BACHELOR OF ARTS IN ENGLISH LANGUAGE (BAEL)</option>
+                                                                                            <option value="BACHELOR OF ARTS IN PHILOSOPHY">BACHELOR OF ARTS IN PHILOSOPHY</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN PSYCHOLOGY">BACHELOR OF SCIENCE IN PSYCHOLOGY</option>
+                                                                                            <option value="BACHELOR OF EARLY CHILDHOOD EDUCATION">BACHELOR OF EARLY CHILDHOOD EDUCATION (BECEd)</option>
+                                                                                            <option value="BACHELOR OF ELEMENTARY EDUCATION">BACHELOR OF ELEMENTARY EDUCATION (BEEd)</option>
+                                                                                            <option value="BACHELOR OF SECONDARY EDUCATION MAJOR IN ENGLISH">BACHELOR OF SECONDARY EDUCATION MAJOR IN ENGLISH (BSEd - ENGLISH)</option>
+                                                                                            <option value="BACHELOR OF SECONDARY EDUCATION MAJOR IN MATHEMATICS">BACHELOR OF SECONDARY EDUCATION MAJOR IN MATHEMATICS (BSEd-MATH)</option>
+                                                                                            <option value="BACHELOR OF SPECIAL NEEDS EDUCATION">BACHELOR OF SPECIAL NEEDS EDUCATION (BSNEd)(Generalist)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN ACCOUNTANCY">BACHELOR OF SCIENCE IN ACCOUNTANCY</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN FINANCIAL MANAGEMENT">BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN FINANCIAL MANAGEMENT</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN HUMAN RESOURCE MANAGEMENT">BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN HUMAN RESOURCE MANAGEMENT</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN MARKETING MANAGEMENT">BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN MARKETING MANAGEMENT</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN OPERATIONS MANAGEMENT">BACHELOR OF SCIENCE IN BUSINESS ADMINISTRATION MAJOR IN OPERATIONS MANAGEMENT</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN CIVIL ENGINEERING">BACHELOR OF SCIENCE IN CIVIL ENGINEERING (BSCE)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN COMPUTER ENGINEERING">BACHELOR OF SCIENCE IN COMPUTER ENGINEERING (BSCpE)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN COMPUTER SCIENCE">BACHELOR OF SCIENCE IN COMPUTER SCIENCE (BSCS)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN CRIMINOLOGY">BACHELOR OF SCIENCE IN CRIMINOLOGY</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN ELECTRONICS ENGINEERING">BACHELOR OF SCIENCE IN ELECTRONICS ENGINEERING (BSECE)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN INFORMATION SYSTEMS">BACHELOR OF SCIENCE IN INFORMATION SYSTEMS (BSIS)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY">BACHELOR OF SCIENCE IN INFORMATION TECHNOLOGY (BSIT)</option>
+                                                                                            <option value="BACHELOR OF SCIENCE IN NURSING">BACHELOR OF SCIENCE IN NURSING</option>
+                                                                                            <option value="MASTER OF ARTS IN EDUCATION MAJOR IN EDUCATIONAL MANAGEMENT">MASTER OF ARTS IN EDUCATION MAJOR IN EDUCATIONAL MANAGEMENT</option>
+                                                                                            <option value="MASTER OF ARTS IN EDUCATION MAJOR IN ENGLISH LANGUAGE TEACHING">MASTER OF ARTS IN EDUCATION MAJOR IN ENGLISH LANGUAGE TEACHING</option>
+                                                                                            <option value="MASTER OF ARTS IN EDUCATION MAJOR IN FILIPINO">MASTER OF ARTS IN EDUCATION MAJOR IN FILIPINO</option>
+                                                                                            <option value="MASTER OF ARTS IN EDUCATION MAJOR IN GUIDANCE & COUNSELING">MASTER OF ARTS IN EDUCATION MAJOR IN GUIDANCE & COUNSELING</option>
+                                                                                            <option value="MASTER IN BUSINESS ADMINISTRATION (MBA)">MASTER IN BUSINESS ADMINISTRATION (MBA)</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-school-flag fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Department" name="department" required>
+                                                                                            <option value="CAS">College of Arts and Sciences</option>
+                                                                                            <option value="CED">College of Education</option>
+                                                                                            <option value="CECS">College of Engineering & Computer Studies</option>
+                                                                                            <option value="CBAA">College of Business Administration and Accountancy</option>
+                                                                                            <option value="CHM">College of Hospitality Management</option>
+                                                                                            <option value="CON">College of Nursing</option>
+                                                                                            <option value="COC">College of Criminology</option>
+                                                                                            <option value="GS">Graduate School</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-location-dot fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <textarea rows="1" class="form-control form-control-primary" name="paddress" placeholder="Permanent Address" data-toggle="tooltip" data-placement="top" data-original-title="Permanent Address" required><?php echo $row['paddress'] ?></textarea>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-mobile-screen fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="tel" id="cphone" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Contact" name="contact" value="<?php echo $row['contact'] ?>" placeholder="09XXXXXYYYY" pattern="[0-9]{11}" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-envelope fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="email" id="email" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Email" name="email" value="<?php echo $row['email'] ?>" placeholder="Email" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
                                                                 </div>
+                                                                <div class="col-lg-6">
+                                                                    <table class="table">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-cake-candles fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="date" class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Birth Date" id="date" name="birthdate" placeholder="Birthday" value="<?php echo $row['birthdate'] ?>" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-venus-mars fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Gender" name="gender">
+                                                                                            <option value="Male" <?php if ($row['gender'] == "Male") echo "selected"; ?>>Male</option>
+                                                                                            <option value="Female" <?php if ($row['gender'] == "Female") echo "selected"; ?>>Female</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-hand-holding-heart fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Civil Status" name="civilstatus">
+                                                                                            <option value="Single" <?php if ($row['civilstatus'] == "Single") echo "selected"; ?>>Single</option>
+                                                                                            <option value="Married" <?php if ($row['civilstatus'] == "Married") echo "selected"; ?>>Married</option>
+                                                                                            <option value="Widow" <?php if ($row['civilstatus'] == "Widow") echo "selected"; ?>>Widow</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-place-of-worship fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <select class="form-control form-control-primary" data-toggle="tooltip" data-placement="top" data-original-title="Religion" name="religion">
+                                                                                            <option value="Roman Catholic" <?php if ($row['religion'] == "Roman Catholic") echo "selected"; ?>>Roman Catholic</option>
+                                                                                            <option value="Islam" <?php if ($row['religion'] == "Islam") echo "selected"; ?>>Islam</option>
+                                                                                            <option value="Seventh Day Adventist" <?php if ($row['civilstatus'] == "Seventh Day Adventist") echo "selected"; ?>>Seventh Day Adventist</option>
+                                                                                            <option value="Baptist" <?php if ($row['religion'] == "Baptist") echo "selected"; ?>>Baptist</option>
+                                                                                            <option value="Mormons" <?php if ($row['religion'] == "Mormons") echo "selected"; ?>>Mormons</option>
+                                                                                            <option value="Iglesia ni Kristo" <?php if ($row['religion'] == "Iglesia ni Kristo") echo "selected"; ?>>Iglesia ni Kristo</option>
+                                                                                            <option value="Protestant" <?php if ($row['religion'] == "Protestant") echo "selected"; ?>>Protestant</option>
+                                                                                            <option value="Born Again" <?php if ($row['religion'] == "Born Again") echo "selected"; ?>>Born Again</option>
+                                                                                            <option value="Jehova`s Witness" <?php if ($row['religion'] == "Jehova`s Witness") echo "selected"; ?>>Jehova`s Witness</option>
+                                                                                            <option value="IFI" <?php if ($row['religion'] == "IFI") echo "selected"; ?>>IFI</option>
+                                                                                            <option value="Evangelism" <?php if ($row['religion'] == "Evangelism") echo "selected"; ?>>Evangelism</option>
+                                                                                            <option value="Christian Alliance" <?php if ($row['religion'] == "Christian Alliance") echo "selected"; ?>>Christian Alliance</option>
+                                                                                            <option value="Others" <?php if ($row['religion'] == "Others") echo "selected"; ?>>Others</option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-person-dress fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Mother's Name" name="mothersname" value="<?php echo $row['mothersname'] ?>" placeholder="Mother's Name" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-person fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Father's Name" name="fathersname" value="<?php echo $row['fathersname'] ?>" placeholder="Father's Name" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-location-dot fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Parent's Address" name="parents_address" value="<?php echo $row['parents_address'] ?>" placeholder="Parent's Address" required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-solid fa-mobile-retro fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <input type="text" class="form-control" data-toggle="tooltip" data-placement="top" data-original-title="Parents's Contact No." name="parents_contact" value="<?php echo $row['parents_contact'] ?>" placeholder="Parents's Contact No." required>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text bg-primary"><i class="fa-sharp fa-solid fa-file-image fa-fw"></i></span>
+                                                                                        </div>
+                                                                                        <div class="custom-file">
+                                                                                            <!-- <input type="file" class="custom-file-input" id="exampleInputFile"> -->
+                                                                                            <input type="file" name="profile_pic" id="profile_pic" class="form-control form-control-sm " value="">
+                                                                                            <label class="custom-file-label" for="profile_pic">Upload Profile Picture <i class="fas fa-upload"></i></label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-12 text-right justify-content-center d-flex mb-4">
+                                                                <button class="btn btn-primary mr-2">Save</button>
                                                             </div>
                                                         <?php endwhile; ?>
                                                     </div>
@@ -447,7 +620,7 @@
             start_load()
             $('#msg').html('')
             $.ajax({
-                url: 'ajax.php?action=save_personal',
+                url: 'ajax.php?action=save_student',
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,
@@ -458,12 +631,37 @@
                     if (resp == 1) {
                         alert_toast('Data successfully saved.', "success");
                         setTimeout(function() {
-                            location.replace('index.php?page=home')
+                            location['reload']()
+                            // location.replace('index.php?page=student&id='.$_GET['id'])
                         }, 1500)
                     }
                 }
             })
         })
+
+        $('.delete_documents').click(function() {
+            _conf("Are you sure you want to delete this document?", "delete_documents", [$(this).attr('data-id')])
+        })
+
+        function delete_documents($id) {
+            start_load()
+            $.ajax({
+                url: 'ajax.php?action=delete_documents',
+                method: 'POST',
+                data: {
+                    id: $id
+                },
+                success: function(resp) {
+                    if (resp == 1) {
+                        alert_toast("Data successfully deleted", 'success')
+                        setTimeout(function() {
+                            location.reload()
+                        }, 1500)
+
+                    }
+                }
+            })
+        }
 
         $(document).ready(function() {
             $("#edit-btn").click(function() {
