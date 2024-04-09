@@ -38,6 +38,14 @@
 ![image](https://github.com/chrisdevworks/SMC-Dean-Document-Management-System/assets/15859284/c3ba1072-712b-4e68-823c-4b8040d833ce?raw=true)
 
 
+### Document Details
+![image](https://github.com/chrisdevworks/SMC-Dean-Document-Management-System/blob/main/Screenshot/Document%20Details.png?raw=true)
+
+
+### Document Paper Trails
+![image](https://github.com/chrisdevworks/SMC-Dean-Document-Management-System/blob/main/Screenshot/Document%20Paper%20Trail.png?raw=true)
+
+
 ### List of Documents for Receiving in this Office
 ![image](https://github.com/chrisdevworks/SMC-Dean-Document-Management-System/blob/main/Screenshot/List%20for%20receiving.png?raw=true)
 
